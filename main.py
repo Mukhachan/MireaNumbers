@@ -1,5 +1,6 @@
 from datetime import datetime
 import asyncio, json
+import os
 
 from config import *
 from GSheets import load_data
@@ -42,6 +43,7 @@ async def handle_photo(message: types.Message) -> None:
         photo_file = await bot.get_file(photo_id)
         
         destination = f"images/{datetime.now()}.jpg"
+        os.mkdir('images/') if not os.path.exists('images/') else None
         await bot.download_file(photo_file.file_path, destination=destination)
         await message.answer("Изображение скачано успешно!")
         await message.answer("Анализируем изображение!")

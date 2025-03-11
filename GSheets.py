@@ -3,7 +3,7 @@ import json
 import os.path
 
 from googleapiclient.http import MediaFileUpload
-from googleapiclient.discovery import build 
+from googleapiclient.discovery import build
 from google.oauth2 import service_account
 
 
@@ -29,7 +29,10 @@ def load_text(number: int, author: str, date: date):
         spreadsheetId = spreadsheet_id,
         range = f'A{number}:C{number}',
         valueInputOption = 'USER_ENTERED',
-        body = {'values' : [data]}
+        body = {
+             'values' : [data]
+            },
+
     ).execute()
 
 def load_photo(number: int, destination: str):
@@ -38,17 +41,17 @@ def load_photo(number: int, destination: str):
     media = MediaFileUpload(destination, mimetype='image/jpeg')
     file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
     insert_image = f'=IMAGE("https://drive.google.com/uc?export=view&id={file.get("id")}")'
-    print(insert_image)
-    body = {
-        'role': 'reader',
-        'type': 'anyone'
-    }
+
 
     response = sheets_service.spreadsheets().values().update(
         spreadsheetId = spreadsheet_id,
         range = f'D{number}:D{number}',
         valueInputOption = 'USER_ENTERED',
-        body = {'values' : [[insert_image]]}
+        body = {
+             'values' : [[insert_image]]
+             },
+
+
     ).execute()
 
     return file

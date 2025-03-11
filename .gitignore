@@ -1,5 +1,6 @@
 .venv/
 __pycache__/
+images/*
 credentials.json
 params.json
 users.json
