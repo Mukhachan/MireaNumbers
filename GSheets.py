@@ -25,15 +25,18 @@ def change_permissions(image_id: str):
 
 def load_text(number: int, author: str, date: date):
     data = [str(number), author, str(date)]
-    values = sheets_service.spreadsheets().values().update(
-        spreadsheetId = spreadsheet_id,
-        range = f'A{number}:C{number}',
-        valueInputOption = 'USER_ENTERED',
-        body = {
-             'values' : [data]
-            },
+    # values = sheets_service.spreadsheets().values().append(
+    #     spreadsheetId = spreadsheet_id,
+    #     range = f'A{number}:C{number}',
+    #     valueInputOption = 'USER_ENTERED',
+    #     body = {
+    #          'values' : [data]
+    #         },
 
-    ).execute()
+    # ).execute()
+
+    return data
+
 
 def load_photo(number: int, destination: str):
     # Загрузка картинки в Google Drive
@@ -42,19 +45,17 @@ def load_photo(number: int, destination: str):
     file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
     insert_image = f'=IMAGE("https://drive.google.com/uc?export=view&id={file.get("id")}")'
 
+    # values = sheets_service.spreadsheets().values().append(
+    #     spreadsheetId = spreadsheet_id,
+    #     range = f'D{number}:D{number}',
+    #     valueInputOption = 'USER_ENTERED',
+    #     body = {
+    #          'values' : [insert_image]
+    #         },
 
-    response = sheets_service.spreadsheets().values().update(
-        spreadsheetId = spreadsheet_id,
-        range = f'D{number}:D{number}',
-        valueInputOption = 'USER_ENTERED',
-        body = {
-             'values' : [[insert_image]]
-             },
+    # ).execute()
 
-
-    ).execute()
-
-    return file
+    return file, insert_image
 
 def delete_photo(destination: str):
     os.remove(destination) if os.path.exists(destination) else None
@@ -66,10 +67,23 @@ def load_data(number: int, author: str, date: date, destination: str):
     drive_service = build('drive', 'v3', credentials=credentials)
     sheets_service = build('sheets', 'v4', credentials=credentials) # http=httpAuth
 
-    file = load_photo(number, destination) # Загружаем картинку в Google Drive и вставляем в таблицу
+    file, insert_image = load_photo(number, destination) # Загружаем картинку в Google Drive и вставляем в таблицу
     change_permissions(file.get("id")) # Меняем права доступа к картинке
-    load_text(number, author, date) # Вставляем текст в картинку
+    data = load_text(number, author, date) # Вставляем текст в картинку
     delete_photo(destination) # Удаляем картинку с компьютера
+
+
+    data.append(insert_image)
+    response = sheets_service.spreadsheets().values().append(
+        spreadsheetId = spreadsheet_id,
+        range = f'A{number}:D{number}',
+        valueInputOption = 'USER_ENTERED',
+        body = {
+             'values' : [data]
+             },
+
+
+    ).execute()
 
 
 
