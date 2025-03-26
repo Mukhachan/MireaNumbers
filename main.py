@@ -25,6 +25,7 @@ async def start(message: types.Message, command: filters.Command) -> None:
             new["validated"][message.chat.id] = start_code
 
             json.dump(new, open("users.json", "w", encoding='utf8'), ensure_ascii=False)
+            del new
             await message.answer("Всё круто! Теперь можешь скидывать номерки")
             
         else:
@@ -62,6 +63,7 @@ async def handle_photo(message: types.Message) -> None:
             date=datetime.now().date(),
             destination=destination
         )
+        del user
         await message.answer("Данные загружены!")
 
     else:
