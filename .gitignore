@@ -4,3 +4,4 @@ images/*
 credentials.json
 params.json
 users.json
+test.py

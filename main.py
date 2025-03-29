@@ -71,13 +71,9 @@ async def handle_photo(message: types.Message) -> None:
 
 
 
-async def main() -> None:
-    global bot
-    bot = Bot(token=BOT_TOKEN)
-
-    await dp.start_polling(bot)
-
 
 if __name__ == "__main__":
     print('Bot started')
-    asyncio.run(main())
+
+    bot = Bot(token=BOT_TOKEN)
+    asyncio.run(dp.start_polling(bot))
