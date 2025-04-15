@@ -63,13 +63,11 @@ async def handle_photo(message: types.Message) -> None:
             date=datetime.now().date(),
             destination=destination
         )
-        del user
+        del user, recognized_data, photo_file
         await message.answer("Данные загружены!")
 
     else:
         await message.answer("Ты не авторизирован")
-
-
 
 
 if __name__ == "__main__":

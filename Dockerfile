@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Копирование файлов проекта
 COPY . /app
-COPY *.json /app/
+
 
 # Активация виртуального окружения
 ENV PATH="/app/env/bin:$PATH"
@@ -21,4 +21,4 @@ RUN pip3 install -r requirements.txt
 EXPOSE 8080
 
 # Запуск приложения
-CMD python3 main.py
+CMD ["python3" "main.py"]
