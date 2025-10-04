@@ -34,4 +34,5 @@
     
 4. Запустите докер-контейнер:
    ```bash
-   docker build -t mirea-numbers .```
+   docker build -t mirea-numbers .
+   ```
